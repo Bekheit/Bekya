@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Dtos;
-using UserService.Models;
+using UserService.Entities;
 
 namespace UserService.Controllers;
 
@@ -26,12 +27,22 @@ public class UsersController : BaseController
     return Ok(_mapper.Map<IEnumerable<UserDto>>(users));
   }
 
+  // [Authorize]
   [HttpGet("{id}")]
-  public async Task<ActionResult<UserDto>> GetUser(int id)
+  public async Task<ActionResult<UserDto>> GetUser(string id)
   {
     var user = await _userRepo.GetUserById(id);
     if (user == null) return NotFound();
 
-    return Ok(user);
+    return Ok(_mapper.Map<UserDto>(user));
   }
+
+  // [HttpPut("id")]
+  // public async Task<ActionResult> UpdateUser(string id)
+  // {
+  //   var user = await _userRepo.GetUserById(id);
+  //   if (user == null) return NotFound();
+
+  //   if ()
+  // }
 }

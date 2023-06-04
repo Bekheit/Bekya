@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserService.Models;
+using UserService.Entities;
 
 namespace UserService.Data
 {
@@ -22,8 +22,8 @@ namespace UserService.Data
       }
 
       context.Users.AddRange(
-        new User() { UserName = "Ahmed" },
-        new User() { UserName = "Mohamed" }
+        new AppUser() { FirstName = "Ahmed" },
+        new AppUser() { FirstName = "Mohamed" }
       );
 
       context.SaveChanges();

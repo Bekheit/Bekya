@@ -1,24 +1,31 @@
-global using UserService.Data;
-global using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using UserService.Extensions;
+using AuthenticationService.Data;
+using AuthenticationService.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddDbContext<DataContext>(options =>
+  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+  options.Password.RequiredLength = 6;
+})
+  .AddEntityFrameworkStores<DataContext>();
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -31,16 +38,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
-
-app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
 await app.Services.CreateScope().ServiceProvider.GetService<DataContext>().Database.MigrateAsync();
-
-Seed.SeedData(app);
 
 app.Run();

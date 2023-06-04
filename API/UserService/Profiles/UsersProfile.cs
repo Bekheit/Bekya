@@ -1,7 +1,7 @@
 
 using AutoMapper;
 using UserService.Dtos;
-using UserService.Models;
+using UserService.Entities;
 
 namespace UserService.Profiles;
 
@@ -9,6 +9,6 @@ public class UsersProfile : Profile
 {
   public UsersProfile()
   {
-    CreateMap<User, UserDto>();
+    CreateMap<AppUser, UserDto>();
   }
 }

@@ -1,7 +1,8 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using UserService.Dtos;
-using UserService.Models;
+using UserService.Entities;
 
 namespace UserService.Data;
 
@@ -15,18 +16,13 @@ public class UserRepo : IUserRepo
     _context = context;
   }
 
-  public void AddUser(User user)
-  {
-    _context.Add(user);
-  }
-
-  public async Task<User> GetUserById(int id)
+  public async Task<AppUser> GetUserById(string id)
   {
     var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
     return user;
   }
 
-  public async Task<IEnumerable<User>> GetUsers()
+  public async Task<IEnumerable<AppUser>> GetUsers()
   {
     return await _context
                 .Users
@@ -36,5 +32,15 @@ public class UserRepo : IUserRepo
   public bool SaveChanges()
   {
     return _context.SaveChanges() >= 0;
+  }
+
+  public Task<ActionResult> UpdateUser(UpdateUserDto updateUserDto)
+  {
+    throw new NotImplementedException();
+  }
+
+  public void UpdateUser(string id)
+  {
+    throw new NotImplementedException();
   }
 }
